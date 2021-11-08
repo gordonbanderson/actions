@@ -111,6 +111,8 @@ jobs:
       - name: PHPStan
         if: ${{ inputs.run-phpstan }}
         run: |
+          pwd
+          ls -al
           find app
           find . | grep Page\.php
           vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
