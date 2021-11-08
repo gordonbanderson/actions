@@ -110,7 +110,10 @@ jobs:
 
       - name: PHPStan
         if: ${{ inputs.run-phpstan }}
-        run: vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
+        run: |
+          find app
+          find . | grep Page\.php
+          vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
 
       - name: TODO
         if: ${{ inputs.run-todo }}
