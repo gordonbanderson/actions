@@ -35,6 +35,12 @@ on:
         required: false
         default: false
 
+      # SilverStripe requires an environment flag set in order to enable test only config, but unfortunately env vars
+      # are not passed through when uses directive is used.  As such it will have to be passed in each time :(
+      test-config-flag:
+        type: string
+        required: false
+        default: THIS_IS_A_DUMMY_FLAG
 
 jobs:
   ssmoduletests:
@@ -57,6 +63,7 @@ jobs:
     steps:
       - name: Check env
         run: |
+          export ${{ inputs.test-config-flag }}=1
           env
           echo In actions workflow, We use the global workflow variable $BUILD_CONFIGURATION
 
