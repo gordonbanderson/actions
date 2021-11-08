@@ -6,11 +6,11 @@ on:
         type: string
         required: false
         default: 7.4
-      run_phplinting:
+      run-phplinting:
         type: boolean
         required: false
         default: true
-      run_phpunit:
+      run-phpunit:
         type: boolean
         required: false
         default: true
@@ -19,6 +19,21 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: SS_mysite
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      strategy:
+        # Ensure all jobs run
+        fail-fast: false
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,6 +46,9 @@ jobs:
         with:
           node-version: '16'
           cache: 'npm'
+
+      - name: Install node packages
+        run: npm install
 
       - name: Setup PHP ${{ inputs.php-version }} with PECL extension
         uses: shivammathur/setup-php@v2
@@ -53,6 +71,12 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      # This is configured to run against the service database
       - name: Set up .env file for database
         run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
 
+      - name: Run tests
+        if: ${{ inputs.runphp-unit == true }}
+        run: |
+          export UNIT_TESTING_CONFIG_ENABLED=1
+          vendor/bin/phpunit tests
