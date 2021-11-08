@@ -1,0 +1,19 @@
+name: ci-silverstripe-module
+on:
+  workflow_call:
+    inputs:
+      run_phplinting:
+        type: boolean
+        required: false
+        default: true
+      run_phpunit:
+        type: boolean
+        required: false
+        default: true
+
+
+jobs:
+  tests:
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
