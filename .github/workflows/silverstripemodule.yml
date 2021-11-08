@@ -6,6 +6,10 @@ on:
         type: string
         required: false
         default: 7.4
+      silverstripe-version:
+        type: string
+        required: false
+        default: 4.9
       run-php-lint:
         type: boolean
         required: false
@@ -85,8 +89,8 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install certain version of SilverStripe
-        run: composer require --no-update silverstripe/recipe-cms:4.7
-        
+        run: composer require --no-update silverstripe/recipe-cms:${{ inputs.silverstripe-version }}
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
