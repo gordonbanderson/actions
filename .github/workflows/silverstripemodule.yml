@@ -9,7 +9,7 @@ on:
       run-php-lint:
         type: boolean
         required: false
-        default: true
+        default: false
       run-php-unit:
         type: boolean
         required: false
