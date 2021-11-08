@@ -6,14 +6,30 @@ on:
         type: string
         required: false
         default: 7.4
-      run-phplinting:
+      run-php-lint:
         type: boolean
         required: false
         default: true
-      run-phpunit:
+      run-php-unit:
         type: boolean
         required: false
         default: true
+      run-php-uni-coverage:
+        type: boolean
+        required: false
+        default: false
+      run-phpstan:
+        type: boolean
+        required: false
+        default: false
+      run-todo:
+        type: boolean
+        required: false
+        default: false
+      run-duplicate-code-check:
+        type: boolean
+        required: false
+        default: false
 
 
 jobs:
@@ -75,8 +91,34 @@ jobs:
       - name: Set up .env file for database
         run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
 
-      - name: Run tests
-        if: ${{ inputs.runphp-unit }}
+      - name: Run Unit Tests
+        if: ${{ inputs.run-php-unit }}
         run: |
           export UNIT_TESTING_CONFIG_ENABLED=1
           vendor/bin/phpunit tests
+
+      - name: Lint Check
+        if: ${{ inputs.run-php-lint }}
+        run: vendor/bin/parallel-lint src/ tests/
+
+      - name: PHP Unit Coverage
+        if: ${{ inputs.run-php-unit-coverage }}
+        run: |
+          export UNIT_TESTING_CONFIG_ENABLED=1
+          phpdbg -qrr vendor/bin/phpunit tests --coverage-clover=coverage.xml
+          bash <(curl -s https://codecov.io/bash) -f coverage.xml
+
+      - name: PHPStan
+        if: ${{ inputs.run-phpstan }}
+        run: vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
+
+      - name: TODO
+        if: ${{ inputs.run-todo }}
+        run: |
+          node_modules/leasot/bin/leasot -x tests --ignore **/*.neon
+
+      - name: Duplication
+        if: ${{ inputs.run-duplicade-code-chek }}
+        run: |
+          node_modules/jscpd/bin/jscpd src
+          node_modules/jscpd/bin/jscpd tests
