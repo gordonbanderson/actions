@@ -2,6 +2,10 @@ name: ci-silverstripe-module
 on:
   workflow_call:
     inputs:
+      php-version:
+        type: string
+        required: false
+        default: 7.4
       run_phplinting:
         type: boolean
         required: false
@@ -18,3 +22,37 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      # Not sure why this is required, but it fixes a missing cache dir issue
+      - name: Ensure npm cache dir exists
+        run: mkdir /home/runner/.npm
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Setup PHP ${{ inputs.php-version }} with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php-version }}
+          extensions: curl, dom, gd, intl, json, ldap, mbstring, mysql, tidy, zip
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Set up .env file for database
+        run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
+
