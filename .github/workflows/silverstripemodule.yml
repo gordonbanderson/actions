@@ -56,8 +56,10 @@ jobs:
 
     steps:
       - name: Check env
-        run: env
-        
+        run: |
+          env
+          echo In actions workflow, We use the global workflow variable $BUILD_CONFIGURATION
+
       - name: Checkout code
         uses: actions/checkout@v2
 
