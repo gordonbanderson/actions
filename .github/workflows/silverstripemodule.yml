@@ -76,7 +76,7 @@ jobs:
         run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
 
       - name: Run tests
-        if: ${{ inputs.runphp-unit == true }}
+        if: ${{ inputs.runphp-unit }}
         run: |
           export UNIT_TESTING_CONFIG_ENABLED=1
           vendor/bin/phpunit tests
