@@ -14,7 +14,7 @@ on:
         type: boolean
         required: false
         default: true
-      run-php-uni-coverage:
+      run-php-unit-coverage:
         type: boolean
         required: false
         default: false
@@ -118,7 +118,7 @@ jobs:
           node_modules/leasot/bin/leasot -x tests --ignore **/*.neon
 
       - name: Duplication
-        if: ${{ inputs.run-duplicade-code-chek }}
+        if: ${{ inputs.run-duplicade-code-check }}
         run: |
           node_modules/jscpd/bin/jscpd src
           node_modules/jscpd/bin/jscpd tests
