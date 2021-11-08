@@ -37,7 +37,7 @@ on:
 
 
 jobs:
-  tests:
+  ssmoduletests:
     runs-on: ubuntu-latest
     services:
       mysql:
