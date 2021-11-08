@@ -84,6 +84,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
+      - name: Install certain version of SilverStripe
+        run: composer require --no-update silverstripe/recipe-cms:4.7
+        
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
