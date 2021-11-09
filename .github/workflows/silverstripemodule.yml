@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Check env
         run: |
-          export ${{ inputs.test-config-flag }}=1
+          echo "${{ inputs.test-config-flag }}=1" >> $GITHUB_ENV
           env
           echo In actions workflow, We use the global workflow variable $BUILD_CONFIGURATION
 
