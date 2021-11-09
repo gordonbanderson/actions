@@ -61,11 +61,9 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Check env
+      - name: Alter env for test yml configuration in SS unit testing - optional
         run: |
           echo "${{ inputs.test-config-flag }}=1" >> $GITHUB_ENV
-          env
-          echo In actions workflow, We use the global workflow variable $BUILD_CONFIGURATION
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -113,7 +111,6 @@ jobs:
       - name: Run Unit Tests
         if: ${{ inputs.run-php-unit }}
         run: |
-          export UNIT_TESTING_CONFIG_ENABLED=1
           vendor/bin/phpunit tests
 
       - name: Lint Check
@@ -123,7 +120,6 @@ jobs:
       - name: PHP Unit Coverage
         if: ${{ inputs.run-php-unit-coverage }}
         run: |
-          export UNIT_TESTING_CONFIG_ENABLED=1
           phpdbg -qrr vendor/bin/phpunit tests --coverage-clover=coverage.xml
           bash <(curl -s https://codecov.io/bash) -f coverage.xml
 
