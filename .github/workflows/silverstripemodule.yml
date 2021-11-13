@@ -105,6 +105,8 @@ jobs:
         run: |
           composer install --prefer-dist --verbose --profile
           ls -al
+          rm -rf vendor/silverstripe/recipe*
+          composer install --prefer-dist --verbose --profile
 
       # This is configured to run against the service database
       - name: Set up .env file for database
