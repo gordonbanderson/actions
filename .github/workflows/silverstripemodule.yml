@@ -102,9 +102,9 @@ jobs:
         run: composer require --no-update silverstripe/recipe-cms:${{ inputs.silverstripe-version }}
 
       - name: Install dependencies
+        # TODO Figure out why recipe removal and reinstall step has become necessary
         run: |
           composer install --prefer-dist --verbose --profile
-          ls -al
           rm -rf vendor/silverstripe/recipe*
           composer install --prefer-dist --verbose --profile
 
@@ -130,10 +130,6 @@ jobs:
       - name: PHPStan
         if: ${{ inputs.run-phpstan }}
         run: |
-          pwd
-          ls -al
-          find app
-          find . | grep Page\.php
           vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
 
       - name: TODO
