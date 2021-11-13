@@ -103,7 +103,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer install --prefer-dist --no-progress
+          composer install --prefer-dist --verbose --profile
           ls -al
 
       # This is configured to run against the service database
