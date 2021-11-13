@@ -102,7 +102,9 @@ jobs:
         run: composer require --no-update silverstripe/recipe-cms:${{ inputs.silverstripe-version }}
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: |
+          composer install --prefer-dist --no-progress
+          ls -al
 
       # This is configured to run against the service database
       - name: Set up .env file for database
