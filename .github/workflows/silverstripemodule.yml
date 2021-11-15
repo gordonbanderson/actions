@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Run Manticoresearch
-        uses: gordonbanderson/manticoresearch-action
+        uses: gordonbanderson/manticoresearch-action@main
 
       - name: Alter env for test yml configuration in SS unit testing - optional
         run: |
