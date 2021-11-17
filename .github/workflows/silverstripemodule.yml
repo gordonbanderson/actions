@@ -6,19 +6,37 @@ on:
         type: string
         required: false
         default: 7.4
+
+      # At time of commit, 4.7 to 4.9 are the supported versions
       silverstripe-version:
         type: string
         required: false
         default: 4.9
-      run-php-lint:
-        type: boolean
+
+      # Only MySQL (mysql) and PostgreSQL (postgresql) supported currently
+      database:
+        type: string
         required: false
-        default: false
+        default: mysql
+
+      # Currently manitcoresearch is the only engine supported
+      search engine:
+        type: string
+        default: none
+        required: false
+
+      # Unit testing flags
       run-php-unit:
         type: boolean
         required: false
         default: true
       run-php-unit-coverage:
+        type: boolean
+        required: false
+        default: false
+
+      # Linting flags
+      run-php-lint:
         type: boolean
         required: false
         default: false
@@ -45,22 +63,33 @@ on:
 jobs:
   ssmoduletests:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: SS_mysite
-        ports:
-          - 3306:3306
-        #options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+#    services:
+#      mysql:
+#        image: mysql:5.7
+#        env:
+#          MYSQL_HOST: 127.0.0.1
+#          MYSQL_ROOT_PASSWORD: root
+#          MYSQL_DATABASE: SS_mysite
+#        ports:
+#          - 3306:3306
+#        #options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     strategy:
       # Ensure all jobs run
       fail-fast: false
 
     steps:
+      - name: Shutdown native MySQL
+        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+
+      - name: Start containerized MySQL
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          container port: 3306 # Optional, default value is 3306. The port of container
+          mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
+          mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
+          mysql root password: root
+
       - name: Run Manticoresearch
         uses: gordonbanderson/manticoresearch-action@main
 
