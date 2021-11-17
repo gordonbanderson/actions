@@ -92,6 +92,7 @@ jobs:
           mysql root password: root
 
       - name: Run PostgreSQL
+        if: ${{ inputs.database == 'postgresql' }}
         uses: harmon758/postgresql-action@v1
         # Copy MySQL credentials as above
         with:
@@ -144,6 +145,10 @@ jobs:
       - name: Install certain version of SilverStripe
         run: composer require --no-update silverstripe/recipe-cms:${{ inputs.silverstripe-version }}
 
+      - name: Optionally installed PostgreSQL package
+        if: ${{ inputs.database == 'postgresql' }}
+        run: composer require --no-update silverstripe/postgresql
+
       - name: Install dependencies
         # TODO Figure out why recipe removal and reinstall step has become necessary
         run: |
@@ -155,6 +160,13 @@ jobs:
       - name: Set up .env file for database
         run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
 
+      - name: Configure for PostgreSQL as opposed to MySQL
+        if: ${{ inputs.database == 'postgresql' }}
+        run: |
+          cat .env | sed s/MySQLDatabase/PostgreSQLDatabase/ > /tmp/ssenv
+          mv /tmp/ssenv .env
+
+        #PostgreSQLDatabase
       - name: Run Unit Tests
         if: ${{ inputs.run-php-unit }}
         run: |
