@@ -86,7 +86,8 @@ jobs:
         if: ${{ inputs.database == 'mysql' }}
         uses: mirromutth/mysql-action@v1.1
         with:
-          mariadb version: 'latest'
+          mysql version: 'latest'
+          container port: 3306
           mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
           mysql root password: root
 
