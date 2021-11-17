@@ -82,16 +82,24 @@ jobs:
       - name: Shutdown native MySQL
         run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
 
-      - name: Start containerized MySQL
+      - name: Optionally start containerized MySQL
         if: ${{ inputs.database == 'mysql' }}
         uses: mirromutth/mysql-action@v1.1
+        with:
+          mariadb version: 'latest'
+          mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
+          mysql root password: root
+
+      - name: Optionally start containerized MariaDB
+        if: ${{ inputs.database == 'mariadb' }}
+        uses: getong/mariadb-action@v1.1
         with:
           container port: 3306 # Optional, default value is 3306. The port of container
           mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
           mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
           mysql root password: root
 
-      - name: Run PostgreSQL
+      - name: Optionally start PostgreSQL
         if: ${{ inputs.database == 'postgresql' }}
         uses: harmon758/postgresql-action@v1
         # Copy MySQL credentials as above
