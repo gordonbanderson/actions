@@ -20,7 +20,7 @@ on:
         default: mysql
 
       # Currently manitcoresearch is the only engine supported
-      search engine:
+      search-engine:
         type: string
         default: none
         required: false
@@ -92,7 +92,7 @@ jobs:
 
 
       - name: Run Manticoresearch
-        if: ${{ inputs.search engine == 'manticoresearch' }}
+        if: ${{ inputs.search-engine == 'manticoresearch' }}
         uses: gordonbanderson/manticoresearch-action@main
 
       - name: Alter env for test yml configuration in SS unit testing - optional
