@@ -91,6 +91,16 @@ jobs:
           mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
           mysql root password: root
 
+      - name: Run PostgreSQL
+        uses: harmon758/postgresql-action@v1
+        # Copy MySQL credentials as above
+        with:
+          postgresql version: 'latest'
+          postgresql db: 'SS_mysite'
+          postgresql user: 'root'
+          postgresql password: 'root'
+
+
       - name: Run Manticoresearch
         uses: gordonbanderson/manticoresearch-action@main
 
