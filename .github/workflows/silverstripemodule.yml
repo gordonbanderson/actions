@@ -92,6 +92,7 @@ jobs:
 
 
       - name: Run Manticoresearch
+        if: ${{ inputs.search engine == 'manticoresearch' }}
         uses: gordonbanderson/manticoresearch-action@main
 
       - name: Alter env for test yml configuration in SS unit testing - optional
