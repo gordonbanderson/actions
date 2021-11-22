@@ -158,10 +158,9 @@ jobs:
           cat .env | sed s/MySQLDatabase/PostgreSQLDatabase/ > /tmp/ssenv
           mv /tmp/ssenv .env
 
-
+      # This is not always required, but safter to run it, running into issues with session manager module
       - name: Run SS dev/build
         run: vendor/bin/sake dev/build flush=all
-
 
       - name: Run Unit Tests
         if: ${{ inputs.run-php-unit }}
