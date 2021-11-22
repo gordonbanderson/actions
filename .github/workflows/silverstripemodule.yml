@@ -151,13 +151,18 @@ jobs:
       - name: Set up .env file for database
         run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
 
+        #PostgreSQLDatabase
       - name: Configure for PostgreSQL as opposed to MySQL
         if: ${{ inputs.database == 'postgresql' }}
         run: |
           cat .env | sed s/MySQLDatabase/PostgreSQLDatabase/ > /tmp/ssenv
           mv /tmp/ssenv .env
 
-        #PostgreSQLDatabase
+
+      - name: Run SS dev/build
+        run: vendor/bin/sake dev/build flush=all
+
+
       - name: Run Unit Tests
         if: ${{ inputs.run-php-unit }}
         run: |
