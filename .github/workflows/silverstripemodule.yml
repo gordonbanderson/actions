@@ -25,6 +25,12 @@ on:
         required: false
         default: mysql
 
+      # Iff this is set, the SQL commands will be executed against the database.  Useful for adding postgis extension
+      database-script:
+        type: string
+        default: ''
+        required: false
+
       # Currently manitcoresearch is the only engine supported
       search-engine:
         type: string
@@ -92,7 +98,7 @@ jobs:
 
       - name: Run PostgreSQL
         if: ${{ inputs.database == 'postgresql' }}
-        uses: harmon758/postgresql-action@v1
+        uses: huaxk/postgis-action@v1
         # Copy MySQL credentials as above
         with:
           postgresql version: 'latest'
