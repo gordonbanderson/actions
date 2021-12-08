@@ -13,6 +13,12 @@ on:
         required: false
         default: 4.9
 
+      # Composer flags
+      validate-composer-file:
+        trype: boolean
+        default: false
+        required: false
+
       # Only MySQL (mysql) and PostgreSQL (postgresql) supported currently
       database:
         type: string
@@ -134,6 +140,7 @@ jobs:
           extensions: curl, dom, gd, intl, json, ldap, mbstring, mysql, tidy, zip
 
       - name: Validate composer.json and composer.lock
+        if: ${{inputs.validate-composer-file == true}}
         run: composer validate --strict
 
       - name: Cache Composer packages
