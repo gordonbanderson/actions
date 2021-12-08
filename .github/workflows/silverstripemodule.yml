@@ -15,7 +15,7 @@ on:
 
       # Composer flags
       validate-composer-file:
-        trype: boolean
+        type: boolean
         default: false
         required: false
 
