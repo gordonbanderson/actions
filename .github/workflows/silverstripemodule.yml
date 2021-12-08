@@ -86,6 +86,10 @@ jobs:
       fail-fast: false
 
     steps:
+    - name: Install Debian Packages
+      if: ${{ inputs.debian-packages != '' }}
+      run: sudo apt -yqq install ${{ inputs.debian-packages }}
+
     - name: Shutdown native MySQL
       run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
 
