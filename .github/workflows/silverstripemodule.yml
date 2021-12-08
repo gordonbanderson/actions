@@ -112,13 +112,14 @@ jobs:
         postgresql user: 'root'
         postgresql password: 'root'
 
-    - name: Run Database scripts for PostgreSQL
-      if: ${{ inputs.database-script != '' }}
-      run: psql -U postgres -d SS_mysite -c "{{ inputs.database-script }}"
 
     - name: Run Manticoresearch
       if: ${{ inputs.search-engine == 'manticoresearch' }}
       uses: gordonbanderson/manticoresearch-action@main
+
+    - name: Run Database scripts for PostgreSQL
+      if: ${{ inputs.database-script != '' }}
+      run: psql -U root -d SS_mysite -c "${{ inputs.database-script }}"
 
     - name: Alter env for test yml configuration in SS unit testing - optional
       run: |
