@@ -85,145 +85,145 @@ jobs:
       # Ensure all jobs run
       fail-fast: false
 
-      steps:
-      - name: Shutdown native MySQL
-        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+    steps:
+    - name: Shutdown native MySQL
+      run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
 
-      - name: Start containerized MySQL
-        if: ${{ inputs.database == 'mysql' }}
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          container port: 3306 # Optional, default value is 3306. The port of container
-          mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
-          mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
-          mysql root password: root
+    - name: Start containerized MySQL
+      if: ${{ inputs.database == 'mysql' }}
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        container port: 3306 # Optional, default value is 3306. The port of container
+        mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
+        mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
+        mysql root password: root
 
-      - name: Start containerized MariaDB
-        if: ${{ inputs.database == 'mariadb' }}
-        uses: getong/mariadb-action@v1.1
+    - name: Start containerized MariaDB
+      if: ${{ inputs.database == 'mariadb' }}
+      uses: getong/mariadb-action@v1.1
 
-      - name: Run PostgreSQL
-        if: ${{ inputs.database == 'postgresql' }}
-        uses: huaxk/postgis-action@v1
-        # Copy MySQL credentials as above
-        with:
-          postgresql version: 'latest'
-          postgresql db: 'SS_mysite'
-          postgresql user: 'root'
-          postgresql password: 'root'
+    - name: Run PostgreSQL
+      if: ${{ inputs.database == 'postgresql' }}
+      uses: huaxk/postgis-action@v1
+      # Copy MySQL credentials as above
+      with:
+        postgresql version: 'latest'
+        postgresql db: 'SS_mysite'
+        postgresql user: 'root'
+        postgresql password: 'root'
 
-      - name: Run Database scripts for PostgreSQL
-        if: ${{ inputs.database-script != '' }}
-        run: psql -U postgres -d SS_mysite -c "{{ inputs.database-script }}"
+    - name: Run Database scripts for PostgreSQL
+      if: ${{ inputs.database-script != '' }}
+      run: psql -U postgres -d SS_mysite -c "{{ inputs.database-script }}"
 
-      - name: Run Manticoresearch
-        if: ${{ inputs.search-engine == 'manticoresearch' }}
-        uses: gordonbanderson/manticoresearch-action@main
+    - name: Run Manticoresearch
+      if: ${{ inputs.search-engine == 'manticoresearch' }}
+      uses: gordonbanderson/manticoresearch-action@main
 
-      - name: Alter env for test yml configuration in SS unit testing - optional
-        run: |
-          echo "${{ inputs.test-config-flag }}=1" >> $GITHUB_ENV
+    - name: Alter env for test yml configuration in SS unit testing - optional
+      run: |
+        echo "${{ inputs.test-config-flag }}=1" >> $GITHUB_ENV
 
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Check node file existence
-        id: check_node_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "package.json, package-lock.json"
+    - name: Check node file existence
+      id: check_node_files
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "package.json, package-lock.json"
 
-      # Not sure why this is required, but it fixes a missing cache dir issue
-      - name: Ensure npm cache dir exists
-        if: steps.check_node_files.outputs.files_exists == 'true'
-        run: mkdir /home/runner/.npm
+    # Not sure why this is required, but it fixes a missing cache dir issue
+    - name: Ensure npm cache dir exists
+      if: steps.check_node_files.outputs.files_exists == 'true'
+      run: mkdir /home/runner/.npm
 
-      - uses: actions/setup-node@v2
-        if: steps.check_node_files.outputs.files_exists == 'true'
-        with:
-          node-version: '16'
-          cache: 'npm'
+    - uses: actions/setup-node@v2
+      if: steps.check_node_files.outputs.files_exists == 'true'
+      with:
+        node-version: '16'
+        cache: 'npm'
 
-      - name: Install node packages
-        if: steps.check_node_files.outputs.files_exists == 'true'
-        run: npm install
+    - name: Install node packages
+      if: steps.check_node_files.outputs.files_exists == 'true'
+      run: npm install
 
-      - name: Setup PHP ${{ inputs.php-version }} with PECL extension
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ inputs.php-version }}
-          extensions: curl, dom, gd, intl, json, ldap, mbstring, mysql, tidy, zip
+    - name: Setup PHP ${{ inputs.php-version }} with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        extensions: curl, dom, gd, intl, json, ldap, mbstring, mysql, tidy, zip
 
-      - name: Validate composer.json and composer.lock
-        if: ${{inputs.validate-composer-file == true}}
-        run: composer validate --strict
+    - name: Validate composer.json and composer.lock
+      if: ${{inputs.validate-composer-file == true}}
+      run: composer validate --strict
 
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
 
-      - name: Install certain version of SilverStripe
-        run: composer require --no-update silverstripe/recipe-cms:${{ inputs.silverstripe-version }}
+    - name: Install certain version of SilverStripe
+      run: composer require --no-update silverstripe/recipe-cms:${{ inputs.silverstripe-version }}
 
-      - name: Optionally installed PostgreSQL package
-        if: ${{ inputs.database == 'postgresql' }}
-        run: composer require --no-update silverstripe/postgresql
+    - name: Optionally installed PostgreSQL package
+      if: ${{ inputs.database == 'postgresql' }}
+      run: composer require --no-update silverstripe/postgresql
 
-      - name: Install dependencies
-        # TODO Figure out why recipe removal and reinstall step has become necessary
-        run: |
-          composer install --prefer-dist --verbose --profile
-          rm -rf vendor/silverstripe/recipe*
-          composer install --prefer-dist --verbose --profile
-          composer info
+    - name: Install dependencies
+      # TODO Figure out why recipe removal and reinstall step has become necessary
+      run: |
+        composer install --prefer-dist --verbose --profile
+        rm -rf vendor/silverstripe/recipe*
+        composer install --prefer-dist --verbose --profile
+        composer info
 
-      # This is configured to run against the service database
-      - name: Set up .env file for database
-        run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
+    # This is configured to run against the service database
+    - name: Set up .env file for database
+      run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
 
-        #PostgreSQLDatabase
-      - name: Configure for PostgreSQL as opposed to MySQL
-        if: ${{ inputs.database == 'postgresql' }}
-        run: |
-          cat .env | sed s/MySQLDatabase/PostgreSQLDatabase/ > /tmp/ssenv
-          mv /tmp/ssenv .env
+      #PostgreSQLDatabase
+    - name: Configure for PostgreSQL as opposed to MySQL
+      if: ${{ inputs.database == 'postgresql' }}
+      run: |
+        cat .env | sed s/MySQLDatabase/PostgreSQLDatabase/ > /tmp/ssenv
+        mv /tmp/ssenv .env
 
-      # This is not always required, but safter to run it, running into issues with session manager module
-      - name: Run SS dev/build
-        run: vendor/bin/sake dev/build flush=all
+    # This is not always required, but safter to run it, running into issues with session manager module
+    - name: Run SS dev/build
+      run: vendor/bin/sake dev/build flush=all
 
-      - name: Run Unit Tests
-        if: ${{ inputs.run-php-unit }}
-        run: |
-          vendor/bin/phpunit tests
+    - name: Run Unit Tests
+      if: ${{ inputs.run-php-unit }}
+      run: |
+        vendor/bin/phpunit tests
 
-      - name: Lint Check
-        if: ${{ inputs.run-php-lint }}
-        run: vendor/bin/parallel-lint src/ tests/
+    - name: Lint Check
+      if: ${{ inputs.run-php-lint }}
+      run: vendor/bin/parallel-lint src/ tests/
 
-      - name: PHP Unit Coverage
-        if: ${{ inputs.run-php-unit-coverage }}
-        run: |
-          phpdbg -qrr vendor/bin/phpunit tests --coverage-clover=coverage.xml
-          bash <(curl -s https://codecov.io/bash) -f coverage.xml
+    - name: PHP Unit Coverage
+      if: ${{ inputs.run-php-unit-coverage }}
+      run: |
+        phpdbg -qrr vendor/bin/phpunit tests --coverage-clover=coverage.xml
+        bash <(curl -s https://codecov.io/bash) -f coverage.xml
 
-      - name: PHPStan
-        if: ${{ inputs.run-phpstan }}
-        run: |
-          vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
+    - name: PHPStan
+      if: ${{ inputs.run-phpstan }}
+      run: |
+        vendor/bin/phpstan analyse --level=8 -c tests/phpstan.neon src/
 
-      - name: TODO
-        if: ${{ inputs.run-todo }}
-        run: |
-          node_modules/leasot/bin/leasot -x tests --ignore **/*.neon
+    - name: TODO
+      if: ${{ inputs.run-todo }}
+      run: |
+        node_modules/leasot/bin/leasot -x tests --ignore **/*.neon
 
-      - name: Duplication
-        if: ${{ inputs.run-duplicade-code-check }}
-        run: |
-          node_modules/jscpd/bin/jscpd src
-          node_modules/jscpd/bin/jscpd tests
+    - name: Duplication
+      if: ${{ inputs.run-duplicade-code-check }}
+      run: |
+        node_modules/jscpd/bin/jscpd src
+        node_modules/jscpd/bin/jscpd tests
