@@ -15,7 +15,7 @@ on:
 
       # Optional list of packages to install
       debian-packages:
-        type:string
+        type: string
         required: false
         default: ''
 
