@@ -107,10 +107,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check node file existence
-          id: check_node_files
-          uses: andstor/file-existence-action@v1
-          with:
-            files: "package.json, package-lock.json"
+        id: check_node_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "package.json, package-lock.json"
 
       # Not sure why this is required, but it fixes a missing cache dir issue
       - name: Ensure npm cache dir exists
