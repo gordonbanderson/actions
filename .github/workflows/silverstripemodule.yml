@@ -128,7 +128,10 @@ jobs:
 
     - name: Run Database scripts for PostgreSQL
       if: ${{ inputs.database-script != '' }}
-      run: psql -U root --host=localhost -d SS_mysite -c "${{ inputs.database-script }}"
+      run: |
+        netstat -tln
+        wait 10 #hack to be removed
+        psql -U root --host=localhost -d SS_mysite -c "${{ inputs.database-script }}"
 
     - name: Alter env for test yml configuration in SS unit testing - optional
       run: |
