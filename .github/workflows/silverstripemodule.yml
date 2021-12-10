@@ -110,7 +110,7 @@ jobs:
         mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
         mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
         mysql root password: root
-        
+
     - name: Run PostgreSQL
       if: ${{ inputs.database == 'postgresql' }}
       uses: huaxk/postgis-action@v1
@@ -162,7 +162,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ inputs.php-version }}
-        extensions: curl, dom, gd, intl, json, ldap, mbstring, mysql, tidy, zip
+        extensions: curl, dom, gd, imagick, intl, json, ldap, mbstring, mysql, tidy, zip
 
     - name: Validate composer.json and composer.lock
       if: ${{inputs.validate-composer-file == true}}
