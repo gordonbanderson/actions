@@ -105,7 +105,12 @@ jobs:
     - name: Start containerized MariaDB
       if: ${{ inputs.database == 'mariadb' }}
       uses: getong/mariadb-action@v1.1
-
+      with:
+        container port: 3306 # Optional, default value is 3306. The port of container
+        mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
+        mysql database: 'SS_mysite' # Optional, default value is "test". The specified database which will be create
+        mysql root password: root
+        
     - name: Run PostgreSQL
       if: ${{ inputs.database == 'postgresql' }}
       uses: huaxk/postgis-action@v1
