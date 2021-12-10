@@ -205,7 +205,7 @@ jobs:
     - name: Run Unit Tests
       if: ${{ inputs.run-php-unit }}
       run: |
-        vendor/bin/phpunit tests
+        vendor/bin/phpunit tests '' flush=1
 
     - name: Lint Check
       if: ${{ inputs.run-php-lint }}
