@@ -130,7 +130,7 @@ jobs:
       if: ${{ inputs.database-script != '' }}
       run: |
         netstat -tln
-        wait 10 #hack to be removed
+        sleep 10 #hack to be removed
         psql -U root --host=localhost -d SS_mysite -c "${{ inputs.database-script }}"
 
     - name: Alter env for test yml configuration in SS unit testing - optional
