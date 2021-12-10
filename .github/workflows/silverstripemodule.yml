@@ -130,7 +130,7 @@ jobs:
       if: ${{ inputs.database-script != '' }}
       run: |
         netstat -tln
-        sleep 10
+        sleep 10 # @todo Ensure server is started before running command, connection fails without some pause
         PGPASSWORD=root psql -U root --host=localhost -d SS_mysite -c "${{ inputs.database-script }}"
 
     - name: Alter env for test yml configuration in SS unit testing - optional
