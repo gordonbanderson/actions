@@ -197,7 +197,8 @@ jobs:
 
     # This is configured to run against the service database
     - name: Set up .env file for database
-      run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
+      #run: wget "https://raw.githubusercontent.com/silverstripe/github-actions-ci-cd/main/.github/things/.env"
+      run: wget -O .env "https://gist.githubusercontent.com/gordonbanderson/4fdcf8e3f2a49c2b947bc8ae25a37cd8/raw/401d0589d84c94f6e34fc534046417a73549f3c3/gistfile1.txt"
 
       #PostgreSQLDatabase
     - name: Configure for PostgreSQL as opposed to MySQL
