@@ -58,6 +58,10 @@ on:
         type: boolean
         required: false
         default: false
+      run-check-coding-standards:
+        type: boolean
+        required: false
+        default: false
       run-phpstan:
         type: boolean
         required: false
@@ -223,6 +227,10 @@ jobs:
     - name: Lint Check
       if: ${{ inputs.run-php-lint }}
       run: vendor/bin/parallel-lint src/ tests/
+
+    - name: Check coding standards
+      if: ${{ inputs.run-check-coding-standards }}
+      run: phpcs src tests --standard=ruleset.xml --extensions=php --encoding=utf-8
 
     - name: PHP Unit Coverage
       if: ${{ inputs.run-php-unit-coverage }}
