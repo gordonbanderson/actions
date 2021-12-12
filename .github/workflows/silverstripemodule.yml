@@ -206,7 +206,11 @@ jobs:
         cat .env | sed s/MySQLDatabase/PostgreSQLDatabase/ > /tmp/ssenv
         mv /tmp/ssenv .env
 
-    # This is not always required, but safter to run it, running into issues with session manager module
+    # Set the database collation explicitly
+    - name: Set database collation
+      run: wget -O _config/collation.yml https://gist.githubusercontent.com/gordonbanderson/4305a3330d22761c78f33b8bf8ea5606/raw/4b229f639b2b4312ebe6526e82db42d1be21fc75/collation.yml
+
+      # This is not always required, but safter to run it, running into issues with session manager module
     - name: Run SS dev/build
       run: vendor/bin/sake dev/build flush=all
 
