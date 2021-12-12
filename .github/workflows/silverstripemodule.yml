@@ -165,7 +165,9 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ inputs.php-version }}
-        extensions: curl, dom, gd, imagick, intl, json, ldap, mbstring, mysql, tidy, zip
+
+        # The last 2 here are an attempt to fix a collation mismatch issue, see https://github.com/silverstripe/silverstripe-framework/issues/9880#issuecomment-809389286
+        extensions: curl, dom, gd, imagick, intl, json, ldap, mbstring, mysql, tidy, zip, nd_mysqli, nd_pdo_mysql
 
     - name: Validate composer.json and composer.lock
       if: ${{inputs.validate-composer-file == true}}
