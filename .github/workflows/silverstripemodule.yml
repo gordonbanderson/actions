@@ -238,7 +238,7 @@ jobs:
     - name: TODO
       if: ${{ inputs.run-todo }}
       run: |
-        node_modules/leasot/bin/leasot -x tests --ignore **/*.neon
+        node_modules/leasot/bin/leasot -x tests --ignore **/*.neon --ignore **/*.tif
 
     - name: Duplication
       if: ${{ inputs.run-duplicade-code-check }}
