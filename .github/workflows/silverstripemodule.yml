@@ -227,7 +227,7 @@ jobs:
     - name: PHP Unit Coverage
       if: ${{ inputs.run-php-unit-coverage }}
       run: |
-        phpdbg -qrr vendor/bin/phpunit tests --coverage-clover=coverage.xml
+        phpdbg -qrr vendor/bin/phpunit tests --coverage-clover=coverage.xml '' flush=1
         bash <(curl -s https://codecov.io/bash) -f coverage.xml
 
     - name: PHPStan
